@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 
 import 'shrine_theme.dart';
 import 'shrine_types.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'redux/app_state.dart';
+import 'redux/actions.dart';
 
 enum ShrineAction { sortByPrice, sortByProduct, emptyCart }
 
@@ -16,7 +20,6 @@ class ShrinePage extends StatefulWidget {
       @required this.scaffoldKey,
       @required this.body,
       this.floatingActionButton,
-      this.products,
       this.shoppingCart})
       : assert(body != null),
         assert(scaffoldKey != null),
@@ -25,7 +28,6 @@ class ShrinePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
   final Widget body;
   final Widget floatingActionButton;
-  final List<Product> products;
   final Map<Product, Order> shoppingCart;
 
   @override
@@ -68,14 +70,6 @@ class ShrinePageState extends State<ShrinePage> {
         });
   }
 
-  void _sortByPrice() {
-    widget.products.sort((Product a, Product b) => a.price.compareTo(b.price));
-  }
-
-  void _sortByProduct() {
-    widget.products.sort((Product a, Product b) => a.name.compareTo(b.name));
-  }
-
   void _emptyCart() {
     widget.shoppingCart.clear();
     widget.scaffoldKey.currentState
@@ -85,54 +79,80 @@ class ShrinePageState extends State<ShrinePage> {
   @override
   Widget build(BuildContext context) {
     final ShrineTheme theme = ShrineTheme.of(context);
-    return new Scaffold(
-        key: widget.scaffoldKey,
-        appBar: new AppBar(
-            elevation: _appBarElevation,
-            backgroundColor: theme.appBarBackgroundColor,
-            iconTheme: Theme.of(context).iconTheme,
-            brightness: Brightness.light,
-            flexibleSpace: new Container(
-                decoration: new BoxDecoration(
-                    border: new Border(
-                        bottom: new BorderSide(color: theme.dividerColor)))),
-            title: new Text('ДЕМО',
-                style: ShrineTheme.of(context).appBarTitleStyle),
-            centerTitle: true,
-            actions: <Widget>[
-              new IconButton(
-                  icon: const Icon(Icons.shopping_cart),
-                  tooltip: 'Корзина',
-                  onPressed: _showShoppingCart),
-              new PopupMenuButton<ShrineAction>(
-                  itemBuilder: (BuildContext context) =>
-                      <PopupMenuItem<ShrineAction>>[
-                        const PopupMenuItem<ShrineAction>(
-                            value: ShrineAction.sortByPrice,
-                            child: const Text('Сортировать по цене')),
-                        const PopupMenuItem<ShrineAction>(
-                            value: ShrineAction.sortByProduct,
-                            child: const Text('Сортировать по названию')),
-                        const PopupMenuItem<ShrineAction>(
-                            value: ShrineAction.emptyCart,
-                            child: const Text('Очистить корзину'))
-                      ],
-                  onSelected: (ShrineAction action) {
-                    switch (action) {
-                      case ShrineAction.sortByPrice:
-                        setState(_sortByPrice);
-                        break;
-                      case ShrineAction.sortByProduct:
-                        setState(_sortByProduct);
-                        break;
-                      case ShrineAction.emptyCart:
-                        setState(_emptyCart);
-                        break;
-                    }
-                  })
-            ]),
-        floatingActionButton: widget.floatingActionButton,
-        body: new NotificationListener<ScrollNotification>(
-            onNotification: _handleScrollNotification, child: widget.body));
+    return new StoreConnector<AppState, _ViewModel>(
+      converter: _ViewModel.fromStore,
+      builder: (context, vm) {
+        return new Scaffold(
+            key: widget.scaffoldKey,
+            appBar: new AppBar(
+                elevation: _appBarElevation,
+                backgroundColor: theme.appBarBackgroundColor,
+                iconTheme: Theme.of(context).iconTheme,
+                brightness: Brightness.light,
+                flexibleSpace: new Container(
+                    decoration: new BoxDecoration(
+                        border: new Border(
+                            bottom:
+                                new BorderSide(color: theme.dividerColor)))),
+                title: new Text('ДЕМО',
+                    style: ShrineTheme.of(context).appBarTitleStyle),
+                centerTitle: true,
+                actions: <Widget>[
+                  new IconButton(
+                      icon: const Icon(Icons.shopping_cart),
+                      tooltip: 'Корзина',
+                      onPressed: _showShoppingCart),
+                  new PopupMenuButton<ShrineAction>(
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuItem<ShrineAction>>[
+                            const PopupMenuItem<ShrineAction>(
+                                value: ShrineAction.sortByPrice,
+                                child: const Text('Сортировать по цене')),
+                            const PopupMenuItem<ShrineAction>(
+                                value: ShrineAction.sortByProduct,
+                                child: const Text('Сортировать по названию')),
+                            const PopupMenuItem<ShrineAction>(
+                                value: ShrineAction.emptyCart,
+                                child: const Text('Очистить корзину'))
+                          ],
+                      onSelected: (ShrineAction action) {
+                        switch (action) {
+                          case ShrineAction.sortByPrice:
+                            vm.onSortByPrice();
+                            break;
+                          case ShrineAction.sortByProduct:
+                            vm.onSortByName();
+                            break;
+                          case ShrineAction.emptyCart:
+                            setState(_emptyCart);
+                            break;
+                        }
+                      })
+                ]),
+            floatingActionButton: widget.floatingActionButton,
+            body: new NotificationListener<ScrollNotification>(
+                onNotification: _handleScrollNotification, child: widget.body));
+      },
+    );
+  }
+}
+
+class _ViewModel {
+  final List<Product> products;
+  final Function() onSortByName;
+  final Function() onSortByPrice;
+
+  _ViewModel({
+    @required this.products,
+    @required this.onSortByName,
+    @required this.onSortByPrice,
+  });
+
+  static _ViewModel fromStore(Store<AppState> store) {
+    return new _ViewModel(
+      products: store.state.products,
+      onSortByName: () => store.dispatch(new ProductsSortByNameAction()),
+      onSortByPrice: () => store.dispatch(new ProductsSortByPriceAction()),
+    );
   }
 }

@@ -6,18 +6,37 @@ import 'package:flutter/material.dart';
 
 import 'shrine/shrine_home.dart';
 import 'shrine/shrine_utils.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'shrine/redux/app_state.dart';
+import 'shrine/redux/actions.dart';
+import 'shrine/globals.dart' as globals;
 
 class ShrineDemo extends StatelessWidget {
-  ShrineDemo();
+  ShrineDemo(this.store);
+  final Store<AppState> store;
 
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: buildShrine(context, new ShrineHomeWrapper()),
+      home: new StoreProvider<AppState>(
+        store: store,
+        child: new StoreBuilder<AppState>(
+          onInit: (store) => store.dispatch(new LoadProductsAction()),
+          builder: (context, store) {
+            return buildShrine(context, new ShrineHome());
+          },
+        ),
+      ),
     );
   }
 }
 
 void main() {
-  runApp(new ShrineDemo());
+  /*
+  final store = new Store<AppState>(appReducer,
+      initialState: new AppState.loading(),
+      middleware: createStoreMiddleware());
+      */
+  runApp(new ShrineDemo(globals.store));
 }

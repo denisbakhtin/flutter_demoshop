@@ -27,13 +27,6 @@ class _VendorItem extends StatelessWidget {
             child: new ClipRRect(
               borderRadius: new BorderRadius.circular(12.0),
               child: new Image.network(vendor.imageUrl, fit: BoxFit.cover),
-              /*
-              child: new Image.asset(
-                vendor.avatarAsset,
-                package: vendor.avatarAssetPackage,
-                fit: BoxFit.cover,
-              ),
-              */
             ),
           ),
           const SizedBox(width: 8.0),
@@ -207,17 +200,12 @@ class Heading extends StatelessWidget {
 // cards appear in a grid below the heading.
 class ProductItem extends StatelessWidget {
   const ProductItem(
-      {Key key,
-      @required this.product,
-      this.parentContext,
-      this.products,
-      this.shoppingCart})
+      {Key key, @required this.product, this.parentContext, this.shoppingCart})
       : assert(product != null),
         super(key: key);
 
   final Product product;
   final Map<Product, Order> shoppingCart;
-  final List<Product> products;
   final BuildContext parentContext;
   //final VoidCallback onPressed;
   Future<Null> _showOrderPage() async {
@@ -229,7 +217,6 @@ class ProductItem extends StatelessWidget {
             builder: (BuildContext context) {
               return new OrderPage(
                 order: order,
-                products: products,
                 shoppingCart: shoppingCart,
               );
             }));

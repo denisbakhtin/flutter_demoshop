@@ -29,3 +29,7 @@ class ProductsLoadedAction {
 }
 
 class LoadProductsAction {}
+
+class ProductsSortByNameAction {}
+
+class ProductsSortByPriceAction {}

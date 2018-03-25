@@ -3,6 +3,9 @@
 // in the LICENSE file.
 
 import 'package:redux/redux.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'app_state.dart';
 import 'actions.dart';
 import '../shrine_types.dart';
@@ -15,10 +18,20 @@ List<Middleware<AppState>> createStoreMiddleware() {
 
 Middleware<AppState> _loadProducts() {
   return (Store<AppState> store, action, NextDispatcher next) {
-    //final List<Product> _products = new List<Product>.from(allProducts());
-    final List<Product> _products = [];
-    store.dispatch(new ProductsLoadedAction(_products));
+    getProducts().then((products) {
+      store.dispatch(new ProductsLoadedAction(products));
+    }).catchError((_) => store.dispatch(new ProductsNotLoadedAction()));
 
     next(action);
   };
+}
+
+Future<List<Product>> getProducts() async {
+  var httpClient = new HttpClient();
+  var request = await httpClient
+      .getUrl(Uri.parse('http://demoshop.miobalans.ru/api/products'));
+  var response = await request.close();
+  var responseBody = await response.transform(utf8.decoder).join();
+  List data = json.decode(responseBody);
+  return data.map((j) => new Product.fromJson(j)).toList();
 }

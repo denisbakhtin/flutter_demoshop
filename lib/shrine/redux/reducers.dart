@@ -8,7 +8,6 @@ AppState appReducer(AppState state, action) {
   return new AppState(
     isLoading: loadingReducer(state.isLoading, action),
     products: productsReducer(state.products, action),
-    //products: _setLoadedProducts(state.products, action),
     shoppingCart: shoppingCartReducer(state.shoppingCart, action),
   );
 }
@@ -25,6 +24,10 @@ bool _setLoaded(bool state, action) {
 final productsReducer = combineTypedReducers<List<Product>>([
   new ReducerBinding<List<Product>, ProductsLoadedAction>(_setLoadedProducts),
   new ReducerBinding<List<Product>, ProductsNotLoadedAction>(_setNoProducts),
+  new ReducerBinding<List<Product>, ProductsSortByNameAction>(
+      _sortProductsByName),
+  new ReducerBinding<List<Product>, ProductsSortByPriceAction>(
+      _sortProductsByPrice),
 ]);
 
 List<Product> _setLoadedProducts(List<Product> state, action) {
@@ -33,6 +36,18 @@ List<Product> _setLoadedProducts(List<Product> state, action) {
 
 List<Product> _setNoProducts(List<Product> state, action) {
   return [];
+}
+
+List<Product> _sortProductsByName(List<Product> state, action) {
+  List<Product> result = new List.from(state);
+  result.sort((Product a, Product b) => a.name.compareTo(b.name));
+  return result;
+}
+
+List<Product> _sortProductsByPrice(List<Product> state, action) {
+  List<Product> result = new List.from(state);
+  result.sort((Product a, Product b) => a.price.compareTo(b.price));
+  return result;
 }
 
 final shoppingCartReducer = combineTypedReducers<Map<Product, Order>>([

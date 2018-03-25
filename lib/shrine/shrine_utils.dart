@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'shrine_theme.dart' show ShrineTheme;
 import 'shrine_types.dart';
+import 'globals.dart' as globals;
+import 'package:flutter_redux/flutter_redux.dart';
+import 'redux/app_state.dart';
 
 final Map<Product, Order> shoppingCart = <Product, Order>{};
 
@@ -26,7 +29,10 @@ class ShrinePageRoute<T> extends MaterialPageRoute<T> {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    return buildShrine(
-        context, super.buildPage(context, animation, secondaryAnimation));
+    return new StoreProvider<AppState>(
+      store: globals.store,
+      child: buildShrine(
+          context, super.buildPage(context, animation, secondaryAnimation)),
+    );
   }
 }
