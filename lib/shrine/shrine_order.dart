@@ -14,6 +14,7 @@ import 'product_grid.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'redux/app_state.dart';
+import 'redux/actions.dart';
 
 // Displays the product title's, description, and order quantity dropdown.
 class _ProductItem extends StatelessWidget {
@@ -221,13 +222,10 @@ class OrderPage extends StatefulWidget {
   OrderPage({
     Key key,
     @required this.order,
-    @required this.shoppingCart,
   })  : assert(order != null),
-        assert(shoppingCart != null),
         super(key: key);
 
   final Order order;
-  final Map<Product, Order> shoppingCart;
 
   @override
   _OrderPageState createState() => new _OrderPageState();
@@ -253,12 +251,10 @@ class _OrderPageState extends State<OrderPage> {
     ShrineOrderRoute.of(context).order = value;
   }
 
-  void updateOrder({int quantity, bool inCart}) {
-    final Order newOrder =
-        currentOrder.copyWith(quantity: quantity, inCart: inCart);
+  void updateOrder(int quantity) {
+    final Order newOrder = currentOrder.copyWith(quantity: quantity);
     if (currentOrder != newOrder) {
       setState(() {
-        widget.shoppingCart[newOrder.product] = newOrder;
         currentOrder = newOrder;
       });
     }
@@ -276,10 +272,9 @@ class _OrderPageState extends State<OrderPage> {
       builder: (context, vm) {
         return new ShrinePage(
           scaffoldKey: scaffoldKey,
-          shoppingCart: widget.shoppingCart,
           floatingActionButton: new FloatingActionButton(
             onPressed: () {
-              updateOrder(inCart: true);
+              vm.onAddToCart(currentOrder);
               final int n = currentOrder.quantity;
               final String item = currentOrder.product.name;
               showSnackBarMessage('В корзине $n $item.');
@@ -297,7 +292,7 @@ class _OrderPageState extends State<OrderPage> {
                   product: widget.order.product,
                   quantity: currentOrder.quantity,
                   quantityChanged: (int value) {
-                    updateOrder(quantity: value);
+                    updateOrder(value);
                   },
                 ),
               ),
@@ -314,7 +309,6 @@ class _OrderPageState extends State<OrderPage> {
                       return new ProductItem(
                         product: product,
                         parentContext: context,
-                        shoppingCart: widget.shoppingCart,
                       );
                     }).toList(),
                   ),
@@ -351,14 +345,21 @@ class ShrineOrderRoute extends ShrinePageRoute<Order> {
 
 class _ViewModel {
   final List<Product> products;
+  final Map<Product, Order> shoppingCart;
+  final Function(Order) onAddToCart;
 
   _ViewModel({
     @required this.products,
+    @required this.shoppingCart,
+    @required this.onAddToCart,
   });
 
   static _ViewModel fromStore(Store<AppState> store) {
     return new _ViewModel(
       products: store.state.products,
+      shoppingCart: store.state.shoppingCart,
+      onAddToCart: (order) =>
+          store.dispatch(new AddToCartAction(order.product, order)),
     );
   }
 }

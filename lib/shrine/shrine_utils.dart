@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'shrine_theme.dart' show ShrineTheme;
-import 'shrine_types.dart';
 import 'globals.dart' as globals;
 import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/app_state.dart';
-
-final Map<Product, Order> shoppingCart = <Product, Order>{};
 
 // This code would ordinarily be part of the MaterialApp's home. It's being
 // used by the ShrineDemo and by each route pushed from there because this

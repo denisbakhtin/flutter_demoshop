@@ -10,7 +10,6 @@ import 'shrine_page.dart';
 import 'shrine_types.dart';
 import 'product_grid.dart';
 import 'product_card.dart';
-import 'shrine_utils.dart';
 import 'shrine_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -40,7 +39,6 @@ class ShrineHome extends StatelessWidget {
         } else {
           return new ShrinePage(
             scaffoldKey: _scaffoldKey,
-            shoppingCart: shoppingCart,
             body: new CustomScrollView(
               slivers: <Widget>[
                 new SliverToBoxAdapter(
@@ -55,7 +53,6 @@ class ShrineHome extends StatelessWidget {
                         return new ProductItem(
                           product: product,
                           parentContext: context,
-                          shoppingCart: shoppingCart,
                         );
                       }).toList(),
                     ),
@@ -84,11 +81,11 @@ class _ViewModel {
   static _ViewModel fromStore(Store<AppState> store) {
     return new _ViewModel(
       products: store.state.products,
+      loading: store.state.isLoading,
       featured: store.state.products.length > 0
           ? store.state.products
               .firstWhere((Product product) => product.featureDescription != '')
           : null,
-      loading: store.state.isLoading,
     );
   }
 }

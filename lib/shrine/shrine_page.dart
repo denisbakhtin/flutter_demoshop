@@ -19,8 +19,7 @@ class ShrinePage extends StatefulWidget {
       {Key key,
       @required this.scaffoldKey,
       @required this.body,
-      this.floatingActionButton,
-      this.shoppingCart})
+      this.floatingActionButton})
       : assert(body != null),
         assert(scaffoldKey != null),
         super(key: key);
@@ -28,7 +27,6 @@ class ShrinePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
   final Widget body;
   final Widget floatingActionButton;
-  final Map<Product, Order> shoppingCart;
 
   @override
   ShrinePageState createState() => new ShrinePageState();
@@ -47,33 +45,6 @@ class ShrinePageState extends State<ShrinePage> {
       });
     }
     return false;
-  }
-
-  void _showShoppingCart() {
-    showModalBottomSheet<Null>(
-        context: context,
-        builder: (BuildContext context) {
-          if (widget.shoppingCart.isEmpty) {
-            return const Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: const Text('Корзина пуста'));
-          }
-          return new ListView(
-            padding: kMaterialListPadding,
-            children: widget.shoppingCart.values.map((Order order) {
-              return new ListTile(
-                  title: new Text(order.product.name),
-                  leading: new Text('${order.quantity}'),
-                  subtitle: new Text(order.product.vendor.name));
-            }).toList(),
-          );
-        });
-  }
-
-  void _emptyCart() {
-    widget.shoppingCart.clear();
-    widget.scaffoldKey.currentState
-        .showSnackBar(const SnackBar(content: const Text('Корзина очищена')));
   }
 
   @override
@@ -101,7 +72,7 @@ class ShrinePageState extends State<ShrinePage> {
                   new IconButton(
                       icon: const Icon(Icons.shopping_cart),
                       tooltip: 'Корзина',
-                      onPressed: _showShoppingCart),
+                      onPressed: vm.onShowCart(context)),
                   new PopupMenuButton<ShrineAction>(
                       itemBuilder: (BuildContext context) =>
                           <PopupMenuItem<ShrineAction>>[
@@ -124,7 +95,7 @@ class ShrinePageState extends State<ShrinePage> {
                             vm.onSortByName();
                             break;
                           case ShrineAction.emptyCart:
-                            setState(_emptyCart);
+                            vm.onClearCart();
                             break;
                         }
                       })
@@ -142,17 +113,49 @@ class _ViewModel {
   final Function() onSortByName;
   final Function() onSortByPrice;
 
+  final Map<Product, Order> shoppingCart;
+  final Function() onClearCart;
+  final Function(BuildContext context) onShowCart;
+
   _ViewModel({
     @required this.products,
     @required this.onSortByName,
     @required this.onSortByPrice,
+    @required this.shoppingCart,
+    @required this.onClearCart,
+    @required this.onShowCart,
   });
 
   static _ViewModel fromStore(Store<AppState> store) {
     return new _ViewModel(
       products: store.state.products,
+      shoppingCart: store.state.shoppingCart,
       onSortByName: () => store.dispatch(new ProductsSortByNameAction()),
       onSortByPrice: () => store.dispatch(new ProductsSortByPriceAction()),
+      onClearCart: () => store.dispatch(new ClearCartAction()),
+      onShowCart: (BuildContext context) {
+        final BuildContext _context = context;
+        return () {
+          showModalBottomSheet<Null>(
+              context: _context,
+              builder: (BuildContext context) {
+                if (store.state.shoppingCart.isEmpty) {
+                  return const Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: const Text('Корзина пуста'));
+                }
+                return new ListView(
+                  padding: kMaterialListPadding,
+                  children: store.state.shoppingCart.values.map((Order order) {
+                    return new ListTile(
+                        title: new Text(order.product.name),
+                        leading: new Text('${order.quantity}'),
+                        subtitle: new Text(order.product.vendor.name));
+                  }).toList(),
+                );
+              });
+        };
+      },
     );
   }
 }

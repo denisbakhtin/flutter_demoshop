@@ -64,20 +64,18 @@ class Product {
 }
 
 class Order {
-  Order({@required this.product, this.quantity: 1, this.inCart: false})
+  Order({@required this.product, this.quantity: 1})
       : assert(product != null),
-        assert(quantity != null && quantity >= 0),
-        assert(inCart != null);
+        assert(quantity != null && quantity >= 0);
 
   final Product product;
   final int quantity;
-  final bool inCart;
 
-  Order copyWith({Product product, int quantity, bool inCart}) {
+  Order copyWith({Product product, int quantity}) {
     return new Order(
-        product: product ?? this.product,
-        quantity: quantity ?? this.quantity,
-        inCart: inCart ?? this.inCart);
+      product: product ?? this.product,
+      quantity: quantity ?? this.quantity,
+    );
   }
 
   @override
@@ -85,14 +83,12 @@ class Order {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
     final Order typedOther = other;
-    return product == typedOther.product &&
-        quantity == typedOther.quantity &&
-        inCart == typedOther.inCart;
+    return product == typedOther.product && quantity == typedOther.quantity;
   }
 
   @override
-  int get hashCode => hashValues(product, quantity, inCart);
+  int get hashCode => hashValues(product, quantity);
 
   @override
-  String toString() => 'Order($product, quantity=$quantity, inCart=$inCart)';
+  String toString() => 'Order($product, quantity=$quantity)';
 }

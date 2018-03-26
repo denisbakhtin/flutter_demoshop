@@ -33,10 +33,5 @@ class ShrineDemo extends StatelessWidget {
 }
 
 void main() {
-  /*
-  final store = new Store<AppState>(appReducer,
-      initialState: new AppState.loading(),
-      middleware: createStoreMiddleware());
-      */
   runApp(new ShrineDemo(globals.store));
 }

@@ -1,10 +1,11 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'shrine_theme.dart';
 import 'shrine_types.dart';
-import 'shrine_utils.dart';
 import 'shrine_order.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'redux/app_state.dart';
 
 const double unitSize = kToolbarHeight;
 
@@ -43,15 +44,16 @@ class _VendorItem extends StatelessWidget {
 // Displays the product's price. If the product is in the shopping cart then the
 // background is highlighted.
 abstract class _PriceItem extends StatelessWidget {
-  const _PriceItem({Key key, @required this.product})
+  const _PriceItem({Key key, @required this.product, this.shoppingCart})
       : assert(product != null),
         super(key: key);
 
   final Product product;
+  final Map<Product, Order> shoppingCart;
 
   Widget buildItem(BuildContext context, TextStyle style, EdgeInsets padding) {
     BoxDecoration decoration;
-    if (shoppingCart[product] != null)
+    if (shoppingCart != null && shoppingCart[product] != null)
       decoration =
           new BoxDecoration(color: ShrineTheme.of(context).priceHighlightColor);
 
@@ -64,8 +66,9 @@ abstract class _PriceItem extends StatelessWidget {
 }
 
 class _ProductPriceItem extends _PriceItem {
-  const _ProductPriceItem({Key key, Product product})
-      : super(key: key, product: product);
+  const _ProductPriceItem(
+      {Key key, Product product, Map<Product, Order> shoppingCart})
+      : super(key: key, product: product, shoppingCart: shoppingCart);
 
   @override
   Widget build(BuildContext context) {
@@ -199,67 +202,91 @@ class Heading extends StatelessWidget {
 // A card that displays a product's image, price, and vendor. The _ProductItem
 // cards appear in a grid below the heading.
 class ProductItem extends StatelessWidget {
-  const ProductItem(
-      {Key key, @required this.product, this.parentContext, this.shoppingCart})
+  const ProductItem({Key key, @required this.product, this.parentContext})
       : assert(product != null),
         super(key: key);
 
   final Product product;
-  final Map<Product, Order> shoppingCart;
   final BuildContext parentContext;
-  //final VoidCallback onPressed;
-  Future<Null> _showOrderPage() async {
-    final Order order = shoppingCart[product] ?? new Order(product: product);
-    final Order completedOrder = await Navigator.push(
-        parentContext,
-        new ShrineOrderRoute(
-            order: order,
-            builder: (BuildContext context) {
-              return new OrderPage(
-                order: order,
-                shoppingCart: shoppingCart,
-              );
-            }));
-    assert(completedOrder.product != null);
-    if (completedOrder.quantity == 0)
-      shoppingCart.remove(completedOrder.product);
-  }
 
   @override
   Widget build(BuildContext context) {
-    return new MergeSemantics(
-      child: new Card(
-        child: new Stack(
-          children: <Widget>[
-            new Column(
+    return StoreConnector<AppState, _ViewModel>(
+      converter: _ViewModel.fromStore,
+      builder: (context, vm) {
+        return new MergeSemantics(
+          child: new Card(
+            child: new Stack(
               children: <Widget>[
-                new Align(
-                  alignment: Alignment.centerRight,
-                  child: new _ProductPriceItem(product: product),
+                new Column(
+                  children: <Widget>[
+                    new Align(
+                      alignment: Alignment.centerRight,
+                      child: new _ProductPriceItem(
+                          product: product, shoppingCart: vm.shoppingCart),
+                    ),
+                    new Container(
+                      width: 144.0,
+                      height: 144.0,
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: new Hero(
+                        tag: product.tag,
+                        child: new Image.network(product.imageUrl,
+                            fit: BoxFit.cover),
+                      ),
+                    ),
+                    new Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: new _VendorItem(vendor: product.vendor),
+                    ),
+                  ],
                 ),
-                new Container(
-                  width: 144.0,
-                  height: 144.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: new Hero(
-                    tag: product.tag,
-                    child:
-                        new Image.network(product.imageUrl, fit: BoxFit.cover),
-                  ),
-                ),
-                new Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: new _VendorItem(vendor: product.vendor),
+                new Material(
+                  type: MaterialType.transparency,
+                  child: new InkWell(
+                      onTap: vm.onShowOrder(parentContext, product)),
                 ),
               ],
             ),
-            new Material(
-              type: MaterialType.transparency,
-              child: new InkWell(onTap: _showOrderPage),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ViewModel {
+  final Map<Product, Order> shoppingCart;
+  final Function(BuildContext, Product) onShowOrder;
+
+  _ViewModel({
+    @required this.shoppingCart,
+    @required this.onShowOrder,
+  });
+
+  static _ViewModel fromStore(Store<AppState> store) {
+    return new _ViewModel(
+      shoppingCart: store.state.shoppingCart,
+      onShowOrder: (BuildContext context, Product product) {
+        final BuildContext _context = context;
+        final Product _product = product;
+        return () async {
+          final Order order = store.state.shoppingCart[_product] ??
+              new Order(product: _product);
+          final Order completedOrder = await Navigator.push(
+              _context,
+              new ShrineOrderRoute(
+                  order: order,
+                  builder: (BuildContext context) {
+                    return new OrderPage(
+                      order: order,
+                    );
+                  }));
+          assert(completedOrder.product != null);
+          //if (completedOrder.quantity == 0)
+          //  shoppingCart.remove(completedOrder.product);
+        };
+      },
     );
   }
 }
