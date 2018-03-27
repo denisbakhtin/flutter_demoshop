@@ -44,31 +44,49 @@ class _VendorItem extends StatelessWidget {
 // Displays the product's price. If the product is in the shopping cart then the
 // background is highlighted.
 abstract class _PriceItem extends StatelessWidget {
-  const _PriceItem({Key key, @required this.product, this.shoppingCart})
+  const _PriceItem({Key key, @required this.product})
       : assert(product != null),
         super(key: key);
 
   final Product product;
-  final Map<Product, Order> shoppingCart;
 
   Widget buildItem(BuildContext context, TextStyle style, EdgeInsets padding) {
-    BoxDecoration decoration;
-    if (shoppingCart != null && shoppingCart[product] != null)
-      decoration =
-          new BoxDecoration(color: ShrineTheme.of(context).priceHighlightColor);
-
-    return new Container(
-      padding: padding,
-      decoration: decoration,
-      child: new Text(product.priceString, style: style),
+    return StoreConnector<AppState, int>(
+      converter: (store) => store.state.shoppingCart[product]?.quantity ?? 0,
+      builder: (context, quantity) {
+        if (quantity > 0) {
+          return new Container(
+            padding: padding,
+            decoration: new BoxDecoration(
+                color: ShrineTheme.of(context).priceHighlightColor),
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Icon(
+                  Icons.shopping_cart,
+                  color: Colors.grey,
+                ),
+                new Text(quantity.toString(),
+                    style: style.copyWith(color: Colors.grey)),
+                const SizedBox(width: 8.0),
+                new Text(product.priceString, style: style),
+              ],
+            ),
+          );
+        }
+        return new Container(
+          padding: padding,
+          child: new Text(product.priceString, style: style),
+        );
+      },
     );
   }
 }
 
 class _ProductPriceItem extends _PriceItem {
-  const _ProductPriceItem(
-      {Key key, Product product, Map<Product, Order> shoppingCart})
-      : super(key: key, product: product, shoppingCart: shoppingCart);
+  const _ProductPriceItem({Key key, Product product})
+      : super(key: key, product: product);
 
   @override
   Widget build(BuildContext context) {
@@ -222,8 +240,7 @@ class ProductItem extends StatelessWidget {
                   children: <Widget>[
                     new Align(
                       alignment: Alignment.centerRight,
-                      child: new _ProductPriceItem(
-                          product: product, shoppingCart: vm.shoppingCart),
+                      child: new _ProductPriceItem(product: product),
                     ),
                     new Container(
                       width: 144.0,

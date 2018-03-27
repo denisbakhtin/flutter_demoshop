@@ -10,7 +10,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'shrine/redux/app_state.dart';
 import 'shrine/redux/actions.dart';
-import 'shrine/globals.dart' as globals;
+import 'shrine/redux/reducers.dart';
+import 'shrine/redux/middleware.dart';
 
 class ShrineDemo extends StatelessWidget {
   ShrineDemo(this.store);
@@ -18,10 +19,10 @@ class ShrineDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new StoreProvider<AppState>(
-        store: store,
-        child: new StoreBuilder<AppState>(
+    return new StoreProvider<AppState>(
+      store: store,
+      child: new MaterialApp(
+        home: new StoreBuilder<AppState>(
           onInit: (store) => store.dispatch(new LoadProductsAction()),
           builder: (context, store) {
             return buildShrine(context, new ShrineHome());
@@ -33,5 +34,8 @@ class ShrineDemo extends StatelessWidget {
 }
 
 void main() {
-  runApp(new ShrineDemo(globals.store));
+  final store = new Store<AppState>(appReducer,
+      initialState: new AppState.loading(),
+      middleware: createStoreMiddleware());
+  runApp(new ShrineDemo(store));
 }
