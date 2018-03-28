@@ -173,46 +173,60 @@ class Heading extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     final ShrineTheme theme = ShrineTheme.of(context);
-    return new MergeSemantics(
-      child: new SizedBox(
-        height: screenSize.width > screenSize.height
-            ? (screenSize.height - kToolbarHeight) * 0.85
-            : (screenSize.height - kToolbarHeight) * 0.70,
-        child: new Container(
-          decoration: new BoxDecoration(
-            color: theme.cardBackgroundColor,
-            border:
-                new Border(bottom: new BorderSide(color: theme.dividerColor)),
+    return StoreConnector<AppState, _ViewModel>(
+      converter: _ViewModel.fromStore,
+      builder: (context, vm) {
+        return new MergeSemantics(
+          child: new SizedBox(
+            height: screenSize.width > screenSize.height
+                ? (screenSize.height - kToolbarHeight) * 0.85
+                : (screenSize.height - kToolbarHeight) * 0.70,
+            child: new Container(
+              decoration: new BoxDecoration(
+                color: theme.cardBackgroundColor,
+                border: new Border(
+                    bottom: new BorderSide(color: theme.dividerColor)),
+              ),
+              child: new Stack(
+                children: <Widget>[
+                  new CustomMultiChildLayout(
+                    delegate: new _HeadingLayout(),
+                    children: <Widget>[
+                      new LayoutId(
+                        id: _HeadingLayout.price,
+                        child: new _FeaturePriceItem(product: product),
+                      ),
+                      new LayoutId(
+                        id: _HeadingLayout.image,
+                        child: new Image.network(product.imageUrl,
+                            fit: BoxFit.cover),
+                      ),
+                      new LayoutId(
+                        id: _HeadingLayout.title,
+                        child: new Text(product.featureTitle,
+                            style: theme.featureTitleStyle),
+                      ),
+                      new LayoutId(
+                        id: _HeadingLayout.description,
+                        child: new Text(product.featureDescription,
+                            style: theme.featureStyle),
+                      ),
+                      new LayoutId(
+                        id: _HeadingLayout.vendor,
+                        child: new _VendorItem(vendor: product.vendor),
+                      ),
+                    ],
+                  ),
+                  new Material(
+                    type: MaterialType.transparency,
+                    child: new InkWell(onTap: vm.onShowOrder(context, product)),
+                  ),
+                ],
+              ),
+            ),
           ),
-          child: new CustomMultiChildLayout(
-            delegate: new _HeadingLayout(),
-            children: <Widget>[
-              new LayoutId(
-                id: _HeadingLayout.price,
-                child: new _FeaturePriceItem(product: product),
-              ),
-              new LayoutId(
-                id: _HeadingLayout.image,
-                child: new Image.network(product.imageUrl, fit: BoxFit.cover),
-              ),
-              new LayoutId(
-                id: _HeadingLayout.title,
-                child: new Text(product.featureTitle,
-                    style: theme.featureTitleStyle),
-              ),
-              new LayoutId(
-                id: _HeadingLayout.description,
-                child: new Text(product.featureDescription,
-                    style: theme.featureStyle),
-              ),
-              new LayoutId(
-                id: _HeadingLayout.vendor,
-                child: new _VendorItem(vendor: product.vendor),
-              ),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
