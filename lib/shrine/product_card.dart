@@ -6,6 +6,7 @@ import 'shrine_order.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'redux/app_state.dart';
+import 'shrine_routes.dart';
 
 const double unitSize = kToolbarHeight;
 

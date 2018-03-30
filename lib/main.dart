@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 import 'shrine/shrine_home.dart';
-import 'shrine/shrine_utils.dart';
+import 'shrine/shrine_routes.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'shrine/redux/app_state.dart';
@@ -34,8 +34,10 @@ class ShrineDemo extends StatelessWidget {
 }
 
 void main() {
-  final store = new Store<AppState>(appReducer,
-      initialState: new AppState.loading(),
-      middleware: createStoreMiddleware());
+  final store = new Store<AppState>(
+    appReducer,
+    initialState: new AppState.loading(),
+    middleware: [loadProductsMiddleware],
+  );
   runApp(new ShrineDemo(store));
 }

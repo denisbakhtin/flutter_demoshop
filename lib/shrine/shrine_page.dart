@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 
 import 'shrine_theme.dart';
 import 'shrine_types.dart';
+import 'shrine_cart.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'redux/app_state.dart';
 import 'redux/actions.dart';
+import 'shrine_routes.dart';
 
 enum ShrineAction { sortByPrice, sortByProduct, emptyCart }
 
@@ -72,7 +74,8 @@ class ShrinePageState extends State<ShrinePage> {
                   new IconButton(
                       icon: const Icon(Icons.shopping_cart),
                       tooltip: 'Корзина',
-                      onPressed: vm.onShowCart(context)),
+                      //onPressed: vm.onShowCart(context)),
+                      onPressed: vm.onEditCart(context)),
                   new PopupMenuButton<ShrineAction>(
                       itemBuilder: (BuildContext context) =>
                           <PopupMenuItem<ShrineAction>>[
@@ -116,6 +119,7 @@ class _ViewModel {
   final Map<Product, Order> shoppingCart;
   final Function() onClearCart;
   final Function(BuildContext context) onShowCart;
+  final Function(BuildContext context) onEditCart;
 
   _ViewModel({
     @required this.products,
@@ -124,6 +128,7 @@ class _ViewModel {
     @required this.shoppingCart,
     @required this.onClearCart,
     @required this.onShowCart,
+    @required this.onEditCart,
   });
 
   static _ViewModel fromStore(Store<AppState> store) {
@@ -154,6 +159,29 @@ class _ViewModel {
                   }).toList(),
                 );
               });
+        };
+      },
+      onEditCart: (BuildContext context) {
+        final BuildContext _context = context;
+        return () async {
+          if (store.state.shoppingCart.isEmpty) {
+            showModalBottomSheet<Null>(
+                context: _context,
+                builder: (BuildContext context) {
+                  if (store.state.shoppingCart.isEmpty) {
+                    return const Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: const Text('Корзина пуста'));
+                  }
+                });
+          } else {
+            await Navigator.push(
+              _context,
+              new ShrineCartRoute(builder: (BuildContext context) {
+                return new CartPage();
+              }),
+            );
+          }
         };
       },
     );

@@ -12,21 +12,21 @@ AppState appReducer(AppState state, action) {
   );
 }
 
-final loadingReducer = combineTypedReducers<bool>([
-  new ReducerBinding<bool, ProductsLoadedAction>(_setLoaded),
-  new ReducerBinding<bool, ProductsNotLoadedAction>(_setLoaded),
+final loadingReducer = combineReducers<bool>([
+  new TypedReducer<bool, ProductsLoadedAction>(_setLoaded),
+  new TypedReducer<bool, ProductsNotLoadedAction>(_setLoaded),
 ]);
 
 bool _setLoaded(bool state, action) {
   return false;
 }
 
-final productsReducer = combineTypedReducers<List<Product>>([
-  new ReducerBinding<List<Product>, ProductsLoadedAction>(_setLoadedProducts),
-  new ReducerBinding<List<Product>, ProductsNotLoadedAction>(_setNoProducts),
-  new ReducerBinding<List<Product>, ProductsSortByNameAction>(
+final productsReducer = combineReducers<List<Product>>([
+  new TypedReducer<List<Product>, ProductsLoadedAction>(_setLoadedProducts),
+  new TypedReducer<List<Product>, ProductsNotLoadedAction>(_setNoProducts),
+  new TypedReducer<List<Product>, ProductsSortByNameAction>(
       _sortProductsByName),
-  new ReducerBinding<List<Product>, ProductsSortByPriceAction>(
+  new TypedReducer<List<Product>, ProductsSortByPriceAction>(
       _sortProductsByPrice),
 ]);
 
@@ -50,9 +50,9 @@ List<Product> _sortProductsByPrice(List<Product> state, action) {
   return result;
 }
 
-final shoppingCartReducer = combineTypedReducers<Map<Product, Order>>([
-  new ReducerBinding<Map<Product, Order>, AddToCartAction>(_addToCart),
-  new ReducerBinding<Map<Product, Order>, ClearCartAction>(_clearCart),
+final shoppingCartReducer = combineReducers<Map<Product, Order>>([
+  new TypedReducer<Map<Product, Order>, AddToCartAction>(_addToCart),
+  new TypedReducer<Map<Product, Order>, ClearCartAction>(_clearCart),
 ]);
 
 Map<Product, Order> _addToCart(Map<Product, Order> state, action) {

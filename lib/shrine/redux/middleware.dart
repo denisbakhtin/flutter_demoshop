@@ -10,20 +10,12 @@ import 'app_state.dart';
 import 'actions.dart';
 import '../shrine_types.dart';
 
-List<Middleware<AppState>> createStoreMiddleware() {
-  return combineTypedMiddleware([
-    new MiddlewareBinding<AppState, LoadProductsAction>(_loadProducts()),
-  ]);
-}
+loadProductsMiddleware(Store<AppState> store, action, NextDispatcher next) {
+  getProducts().then((products) {
+    store.dispatch(new ProductsLoadedAction(products));
+  }).catchError((_) => store.dispatch(new ProductsNotLoadedAction()));
 
-Middleware<AppState> _loadProducts() {
-  return (Store<AppState> store, action, NextDispatcher next) {
-    getProducts().then((products) {
-      store.dispatch(new ProductsLoadedAction(products));
-    }).catchError((_) => store.dispatch(new ProductsNotLoadedAction()));
-
-    next(action);
-  };
+  next(action);
 }
 
 Future<List<Product>> getProducts() async {

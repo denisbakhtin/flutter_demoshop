@@ -5,7 +5,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'shrine_utils.dart' show ShrinePageRoute;
+import 'shrine_routes.dart';
 import 'shrine_page.dart';
 import 'shrine_theme.dart';
 import 'shrine_types.dart';
@@ -320,27 +320,6 @@ class _OrderPageState extends State<OrderPage> {
       },
     );
   }
-}
-
-// Displays a full-screen modal OrderPage.
-//
-// The order field will be replaced each time the user reconfigures the order.
-// When the user backs out of this route the completer's value will be the
-// final value of the order field.
-class ShrineOrderRoute extends ShrinePageRoute<Order> {
-  ShrineOrderRoute({
-    @required this.order,
-    WidgetBuilder builder,
-    RouteSettings settings: const RouteSettings(),
-  })  : assert(order != null),
-        super(builder: builder, settings: settings);
-
-  Order order;
-
-  @override
-  Order get currentResult => order;
-
-  static ShrineOrderRoute of(BuildContext context) => ModalRoute.of(context);
 }
 
 class _ViewModel {
