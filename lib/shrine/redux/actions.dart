@@ -8,10 +8,6 @@ class AddToCartAction {
   final Product product;
   final Order order;
   AddToCartAction(this.product, this.order);
-  @override
-  String toString() {
-    return 'AddToCartAction{product: $product, order: $order}';
-  }
 }
 
 class ClearCartAction {}
@@ -21,11 +17,6 @@ class ProductsNotLoadedAction {}
 class ProductsLoadedAction {
   final List<Product> products;
   ProductsLoadedAction(this.products);
-
-  @override
-  String toString() {
-    return 'ProductsLoadedAction{products: $products}';
-  }
 }
 
 class LoadProductsAction {}
@@ -33,3 +24,14 @@ class LoadProductsAction {}
 class ProductsSortByNameAction {}
 
 class ProductsSortByPriceAction {}
+
+class CartItemChangedAction {
+  final Order order;
+  final int quantity;
+  CartItemChangedAction(this.order, this.quantity);
+}
+
+class CartItemRemovedAction {
+  final Order order;
+  CartItemRemovedAction(this.order);
+}

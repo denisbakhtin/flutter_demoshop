@@ -59,22 +59,23 @@ class ShrinePageState extends State<ShrinePage> {
             key: widget.scaffoldKey,
             appBar: new AppBar(
                 elevation: _appBarElevation,
-                backgroundColor: theme.appBarBackgroundColor,
                 iconTheme: Theme.of(context).iconTheme,
                 brightness: Brightness.light,
                 flexibleSpace: new Container(
                     decoration: new BoxDecoration(
                         border: new Border(
-                            bottom:
-                                new BorderSide(color: theme.dividerColor)))),
+                            bottom: new BorderSide(
+                                color: theme.appBarBorderColor)))),
                 title: new Text('ДЕМО',
                     style: ShrineTheme.of(context).appBarTitleStyle),
                 centerTitle: true,
                 actions: <Widget>[
                   new IconButton(
-                      icon: const Icon(Icons.shopping_cart),
+                      icon: new Icon(Icons.shopping_cart,
+                          color: vm.shoppingCart.isEmpty
+                              ? Colors.white70
+                              : theme.appBarFullCartIconColor),
                       tooltip: 'Корзина',
-                      //onPressed: vm.onShowCart(context)),
                       onPressed: vm.onEditCart(context)),
                   new PopupMenuButton<ShrineAction>(
                       itemBuilder: (BuildContext context) =>
@@ -118,7 +119,6 @@ class _ViewModel {
 
   final Map<Product, Order> shoppingCart;
   final Function() onClearCart;
-  final Function(BuildContext context) onShowCart;
   final Function(BuildContext context) onEditCart;
 
   _ViewModel({
@@ -127,7 +127,6 @@ class _ViewModel {
     @required this.onSortByPrice,
     @required this.shoppingCart,
     @required this.onClearCart,
-    @required this.onShowCart,
     @required this.onEditCart,
   });
 
@@ -138,29 +137,6 @@ class _ViewModel {
       onSortByName: () => store.dispatch(new ProductsSortByNameAction()),
       onSortByPrice: () => store.dispatch(new ProductsSortByPriceAction()),
       onClearCart: () => store.dispatch(new ClearCartAction()),
-      onShowCart: (BuildContext context) {
-        final BuildContext _context = context;
-        return () {
-          showModalBottomSheet<Null>(
-              context: _context,
-              builder: (BuildContext context) {
-                if (store.state.shoppingCart.isEmpty) {
-                  return const Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: const Text('Корзина пуста'));
-                }
-                return new ListView(
-                  padding: kMaterialListPadding,
-                  children: store.state.shoppingCart.values.map((Order order) {
-                    return new ListTile(
-                        title: new Text(order.product.name),
-                        leading: new Text('${order.quantity}'),
-                        subtitle: new Text(order.product.vendor.name));
-                  }).toList(),
-                );
-              });
-        };
-      },
       onEditCart: (BuildContext context) {
         final BuildContext _context = context;
         return () async {

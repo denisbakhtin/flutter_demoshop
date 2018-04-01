@@ -64,12 +64,14 @@ abstract class _PriceItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Icon(
+                new Icon(
                   Icons.shopping_cart,
-                  color: Colors.grey,
+                  color: ShrineTheme.of(context).priceHighlightIconColor,
                 ),
                 new Text(quantity.toString(),
-                    style: style.copyWith(color: Colors.grey)),
+                    style: style.copyWith(
+                        color:
+                            ShrineTheme.of(context).priceHighlightIconColor)),
                 const SizedBox(width: 8.0),
                 new Text(product.priceString, style: style),
               ],

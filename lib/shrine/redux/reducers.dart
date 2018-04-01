@@ -12,21 +12,21 @@ AppState appReducer(AppState state, action) {
   );
 }
 
-final loadingReducer = combineReducers<bool>([
-  new TypedReducer<bool, ProductsLoadedAction>(_setLoaded),
-  new TypedReducer<bool, ProductsNotLoadedAction>(_setLoaded),
+final loadingReducer = combineTypedReducers<bool>([
+  new ReducerBinding<bool, ProductsLoadedAction>(_setLoaded),
+  new ReducerBinding<bool, ProductsNotLoadedAction>(_setLoaded),
 ]);
 
 bool _setLoaded(bool state, action) {
   return false;
 }
 
-final productsReducer = combineReducers<List<Product>>([
-  new TypedReducer<List<Product>, ProductsLoadedAction>(_setLoadedProducts),
-  new TypedReducer<List<Product>, ProductsNotLoadedAction>(_setNoProducts),
-  new TypedReducer<List<Product>, ProductsSortByNameAction>(
+final productsReducer = combineTypedReducers<List<Product>>([
+  new ReducerBinding<List<Product>, ProductsLoadedAction>(_setLoadedProducts),
+  new ReducerBinding<List<Product>, ProductsNotLoadedAction>(_setNoProducts),
+  new ReducerBinding<List<Product>, ProductsSortByNameAction>(
       _sortProductsByName),
-  new TypedReducer<List<Product>, ProductsSortByPriceAction>(
+  new ReducerBinding<List<Product>, ProductsSortByPriceAction>(
       _sortProductsByPrice),
 ]);
 
@@ -50,9 +50,13 @@ List<Product> _sortProductsByPrice(List<Product> state, action) {
   return result;
 }
 
-final shoppingCartReducer = combineReducers<Map<Product, Order>>([
-  new TypedReducer<Map<Product, Order>, AddToCartAction>(_addToCart),
-  new TypedReducer<Map<Product, Order>, ClearCartAction>(_clearCart),
+final shoppingCartReducer = combineTypedReducers<Map<Product, Order>>([
+  new ReducerBinding<Map<Product, Order>, AddToCartAction>(_addToCart),
+  new ReducerBinding<Map<Product, Order>, ClearCartAction>(_clearCart),
+  new ReducerBinding<Map<Product, Order>, CartItemChangedAction>(
+      _itemChangedCart),
+  new ReducerBinding<Map<Product, Order>, CartItemRemovedAction>(
+      _itemRemovedCart),
 ]);
 
 Map<Product, Order> _addToCart(Map<Product, Order> state, action) {
@@ -63,4 +67,17 @@ Map<Product, Order> _addToCart(Map<Product, Order> state, action) {
 
 Map<Product, Order> _clearCart(Map<Product, Order> state, action) {
   return new Map<Product, Order>();
+}
+
+Map<Product, Order> _itemChangedCart(Map<Product, Order> state, action) {
+  Order order = action.order.copyWith(quantity: action.quantity);
+  Map<Product, Order> map = new Map.from(state);
+  map[action.order.product] = order;
+  return map;
+}
+
+Map<Product, Order> _itemRemovedCart(Map<Product, Order> state, action) {
+  Map<Product, Order> map = new Map.from(state);
+  map.remove(action.order.product);
+  return map;
 }

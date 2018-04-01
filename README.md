@@ -5,9 +5,11 @@ Data is served by json [web api project in golang](https://github.com/denisbakht
 
 Uses [flutter_redux](https://github.com/brianegan/flutter_redux) as a main application state manager, primarily for keeping the list of projects and shopping cart, instead of passing them all over as parameters.
 
+Added demo shopping cart page with editable items & swipe gesture item removal.
+
 ## Todo
 
-Add demo checkout & shopping cart pages.
+Reorganize file structure.
 Add loading spinner fade animation?
 
 ## Getting Started

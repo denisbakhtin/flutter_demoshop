@@ -279,10 +279,9 @@ class _OrderPageState extends State<OrderPage> {
               final String item = currentOrder.product.name;
               showSnackBarMessage('В корзине $n $item.');
             },
-            backgroundColor: const Color(0xFF16F0F0),
-            child: const Icon(
+            child: new Icon(
               Icons.add_shopping_cart,
-              color: Colors.black,
+              color: ShrineTheme.of(context).floatingActionButtonColor,
             ),
           ),
           body: new CustomScrollView(
