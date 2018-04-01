@@ -23,6 +23,9 @@ class Vendor {
         imageUrl = json['image_url'];
 
   @override
+  int get hashCode => name.hashCode ^ description.hashCode ^ imageUrl.hashCode;
+
+  @override
   String toString() => 'Vendor($name)';
 }
 
@@ -58,6 +61,16 @@ class Product {
         categories = [],
         price = json['price'],
         vendor = new Vendor.fromJson(json['vendor']);
+
+  @override
+  int get hashCode => hashValues(
+      vendor,
+      name.hashCode ^
+          description.hashCode ^
+          featureTitle.hashCode ^
+          featureDescription.hashCode ^
+          imageUrl.hashCode ^
+          price.hashCode);
 
   @override
   String toString() => 'Product($name)';
