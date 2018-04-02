@@ -4,14 +4,14 @@
 
 import 'package:flutter/material.dart';
 
-import 'shrine/shrine_home.dart';
-import 'shrine/shrine_routes.dart';
+import 'shop/home.dart';
+import 'shop/shared/routes.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'shrine/redux/app_state.dart';
-import 'shrine/redux/actions.dart';
-import 'shrine/redux/reducers.dart';
-import 'shrine/redux/middleware.dart';
+import 'shop/redux/app_state.dart';
+import 'shop/redux/actions.dart';
+import 'shop/redux/reducers.dart';
+import 'shop/redux/middleware.dart';
 
 class ShrineDemo extends StatelessWidget {
   ShrineDemo(this.store);

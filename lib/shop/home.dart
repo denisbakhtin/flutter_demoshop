@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
 
-import 'shrine_page.dart';
-import 'shrine_types.dart';
-import 'product_grid.dart';
-import 'product_card.dart';
-import 'shrine_theme.dart';
+import 'shared/page.dart';
+import 'shared/types.dart';
+import 'product/grid.dart';
+import 'product/preview.dart';
+import 'shared/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';

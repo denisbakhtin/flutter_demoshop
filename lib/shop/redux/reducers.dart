@@ -1,7 +1,7 @@
 import 'actions.dart';
 import 'package:redux/redux.dart';
 import 'app_state.dart';
-import '../shrine_types.dart';
+import '../shared/types.dart';
 
 // We create the State reducer by combining many smaller reducers into one!
 AppState appReducer(AppState state, action) {

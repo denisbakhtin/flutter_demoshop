@@ -5,16 +5,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'shrine_routes.dart';
-import 'shrine_page.dart';
-import 'shrine_theme.dart';
-import 'shrine_types.dart';
-import 'product_card.dart';
-import 'product_grid.dart';
+import '../shared/routes.dart';
+import '../shared/page.dart';
+import '../shared/theme.dart';
+import '../shared/types.dart';
+import 'preview.dart';
+import 'grid.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'redux/app_state.dart';
-import 'redux/actions.dart';
+import '../redux/app_state.dart';
+import '../redux/actions.dart';
 
 // Displays the product title's, description, and order quantity dropdown.
 class _ProductItem extends StatelessWidget {

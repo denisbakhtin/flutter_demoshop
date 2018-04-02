@@ -5,14 +5,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'shrine_theme.dart';
-import 'shrine_types.dart';
-import 'shrine_cart.dart';
+import 'theme.dart';
+import 'types.dart';
+import '../cart.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'redux/app_state.dart';
-import 'redux/actions.dart';
-import 'shrine_routes.dart';
+import '../redux/app_state.dart';
+import '../redux/actions.dart';
+import 'routes.dart';
 
 enum ShrineAction { sortByPrice, sortByProduct, emptyCart }
 

@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT license that can be found
 // in the LICENSE file.
 
-import '../shrine_types.dart';
+import '../shared/types.dart';
 
 class AddToCartAction {
   final Product product;

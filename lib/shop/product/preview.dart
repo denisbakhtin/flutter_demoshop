@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'shrine_theme.dart';
-import 'shrine_types.dart';
-import 'shrine_order.dart';
+import '../shared/theme.dart';
+import '../shared/types.dart';
+import 'order.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'redux/app_state.dart';
-import 'shrine_routes.dart';
+import '../redux/app_state.dart';
+import '../shared/routes.dart';
 
 const double unitSize = kToolbarHeight;
 

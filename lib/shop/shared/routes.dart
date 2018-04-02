@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'shrine_theme.dart' show ShrineTheme;
-import 'shrine_types.dart';
+import 'theme.dart' show ShrineTheme;
+import 'types.dart';
 import 'package:flutter/foundation.dart';
 
 // This code would ordinarily be part of the MaterialApp's home. It's being

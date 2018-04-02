@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import '../shrine_types.dart';
+import '../shared/types.dart';
 
 @immutable
 class AppState {

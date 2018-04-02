@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'app_state.dart';
 import 'actions.dart';
-import '../shrine_types.dart';
+import '../shared/types.dart';
 
 List<Middleware<AppState>> createStoreMiddleware() {
   return combineTypedMiddleware([

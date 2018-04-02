@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'shrine_page.dart';
-import 'shrine_types.dart';
+import 'shared/page.dart';
+import 'shared/types.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'redux/app_state.dart';
 import 'redux/actions.dart';
-import 'shrine_theme.dart';
+import 'shared/theme.dart';
 
 class CartPage extends StatefulWidget {
   CartPage({Key key}) : super(key: key);
