@@ -103,8 +103,10 @@ class Footer extends StatelessWidget {
     return new SliverToBoxAdapter(
       child: new Container(
         decoration: new BoxDecoration(
-            border: new Border(top: new BorderSide(color: theme.dividerColor))),
+            border:
+                new Border(bottom: new BorderSide(color: theme.dividerColor))),
         padding: new EdgeInsets.all(16.0),
+        margin: EdgeInsets.only(bottom: 80.0),
         child: new Row(
           children: <Widget>[
             new Expanded(
@@ -152,10 +154,14 @@ class _CartItemState extends State<CartItem> {
     return new StoreConnector<AppState, _ItemViewModel>(
       converter: (store) => _ItemViewModel.fromStore(store, widget.order),
       builder: (context, vm) {
+        final ShrineTheme theme = ShrineTheme.of(context);
         return new Dismissible(
           key: widget.key,
           onDismissed: vm.onDismiss,
-          child: new Card(
+          child: new Container(
+            decoration: new BoxDecoration(
+                border: new Border(
+                    bottom: new BorderSide(color: theme.dividerColor))),
             child: new ListTile(
               leading: new Image.network(widget.order.product.imageUrl),
               title: new Text(widget.order.product.name),
