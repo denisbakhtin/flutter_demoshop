@@ -37,9 +37,11 @@ class _CartPageState extends State<CartPage> {
         return new ShrinePage(
           scaffoldKey: scaffoldKey,
           floatingActionButton: new FloatingActionButton(
-            onPressed: () => vm.onCheckout(context),
+            onPressed: () => scaffoldKey.currentState.showSnackBar(new SnackBar(
+                content: new Text(
+                    'В демо режиме оплата не предусмотрена.'))), //vm.onCheckout(context),
             child: new Icon(
-              Icons.check,
+              Icons.credit_card,
               color: theme.floatingActionButtonColor,
             ),
           ),

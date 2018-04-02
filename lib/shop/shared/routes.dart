@@ -11,6 +11,7 @@ Widget buildShrine(BuildContext context, Widget child) {
       data: new ThemeData(
         primaryColor: Colors.blueGrey.shade400,
         primarySwatch: Colors.blueGrey,
+        accentColor: Colors.cyan,
         iconTheme: const IconThemeData(color: const Color(0xAAFFFFFF)),
         platform: Theme.of(context).platform,
       ),

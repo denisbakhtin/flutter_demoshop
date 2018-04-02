@@ -54,7 +54,7 @@ class ShrineTheme extends InheritedWidget {
   final Color cardBackgroundColor = Colors.white;
   final Color appBarBorderColor = Colors.blueGrey.shade400;
   final Color dividerColor = const Color(0xFFD9D9D9);
-  final Color priceHighlightColor = Colors.blueGrey.shade100;
+  final Color priceHighlightColor = Colors.cyan.shade50;
   final Color priceHighlightIconColor = Colors.grey.shade400;
 
   final Color floatingActionButtonColor = Colors.white;
