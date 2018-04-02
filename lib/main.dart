@@ -22,6 +22,7 @@ class ShrineDemo extends StatelessWidget {
     return new StoreProvider<AppState>(
       store: store,
       child: new MaterialApp(
+        title: 'Демо магазин',
         home: new StoreBuilder<AppState>(
           onInit: (store) => store.dispatch(new LoadProductsAction()),
           builder: (context, store) {

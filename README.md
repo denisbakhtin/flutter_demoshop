@@ -10,7 +10,6 @@ Added demo shopping cart page with editable items & swipe gesture item removal.
 ## Todo
 
 Reorganize file structure.
-Add loading spinner fade animation?
 
 ## Getting Started
 
